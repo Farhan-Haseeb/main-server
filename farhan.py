@@ -71,42 +71,47 @@ class PSO():
         global num_dimensions
 
         num_dimensions = len(x0[0])
-        err_best_g =- 1
-        pos_best_g = []
+        self.err_best_g =- 1
+        self.pos_best_g = []
+        self.num_particles = num_particles
+        self.maxiter = maxiter
+        self.x0 = x0
+        self.bounds = bounds
+        self.costFunc = costFunc
 
+    def run(self):
         swarm = []
-        for i in range(0, num_particles):
-            swarm.append(Particle(x0[i]))
+        for i in range(0, self.num_particles):
+            swarm.append(Particle(self.x0[i]))
 
         i = 0
 
-        while i < maxiter:
+        while i < self.maxiter:
             # cycle through particles in swarm and evaluate fitness
-            for j in range(0, num_particles):
-                swarm[j].evaluate(costFunc)
+            for j in range(0, self.num_particles):
+                swarm[j].evaluate(self.costFunc)
                 # determine if current particle is the best (globally)
-                if swarm[j].err_i < err_best_g or err_best_g == -1:
-                    pos_best_g = list(swarm[j].position_i)
-                    err_best_g = float(swarm[j].err_i)
-            print(pos_best_g, swarm[j].id , 'best g')
+                if swarm[j].err_i < self.err_best_g or self.err_best_g == -1:
+                    self.pos_best_g = list(swarm[j].position_i)
+                    self.err_best_g = float(swarm[j].err_i)
+            print(self.pos_best_g, swarm[j].id , 'best g')
             # cycle through swarm and update velocities and position
-            for j in range(0, num_particles):
-                swarm[j].update_velocity(pos_best_g)
-                swarm[j].update_position(bounds)
+            for j in range(0, self.num_particles):
+                swarm[j].update_velocity(self.pos_best_g)
+                swarm[j].update_position(self.bounds)
                 print(swarm[j].id, swarm[j].position_i)
             i += 1
 
         # print final results
         print('FINAL:')
-        print(pos_best_g)
-        # print(err_best_g)
-        # return pos_best_g
+        print(self.pos_best_g)
+        # print(self.err_best_g)
+        return self.pos_best_g
 
 
 # initials = [[16, 12], [0, 5], [2, 10], [5, 9]]
 initials = [{'address': '192.168.8.111:52608', 'initials': [16, 12]},{'address': '192.168.8.114:52610', 'initials': [6, 4]}, {'address': '192.168.8.131:50608', 'initials': [6, 8]},{'address': '192.168.8.124:52410', 'initials': [16, 4]}]
 bounds = [(0, 2), (10, 16)]
 
-pos = PSO(optimization_function, initials, bounds, num_particles = 4, maxiter=10)
-
-# print(f"{pos}, the final value")
+pso = PSO(optimization_function, initials, bounds, num_particles = 4, maxiter=10)
+print(f"{pso.run()}, the final value")
