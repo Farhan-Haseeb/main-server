@@ -28,7 +28,7 @@ class Particle():
         for i in range(0, num_dimensions):
             self.velocity_i.append(random.uniform(-1, 1))
             self.position_i.append(x0['initials'][i])
-        print(self.id, self.position_i)
+        print(f"{self.id}, {self.position_i} particle id and location")
 
         # evaluate current fitness
     def evaluate(self,costFunc):
@@ -94,17 +94,13 @@ class PSO():
                 if swarm[j].err_i < self.err_best_g or self.err_best_g == -1:
                     self.pos_best_g = list(swarm[j].position_i)
                     self.err_best_g = float(swarm[j].err_i)
-            print(self.pos_best_g, swarm[j].id , 'best g')
             # cycle through swarm and update velocities and position
             for j in range(0, self.num_particles):
                 swarm[j].update_velocity(self.pos_best_g)
                 swarm[j].update_position(self.bounds)
-                print(swarm[j].id, swarm[j].position_i)
             i += 1
 
         # print final results
-        print('FINAL:')
-        print(self.pos_best_g)
         # print(self.err_best_g)
         return self.pos_best_g
 
@@ -113,5 +109,5 @@ class PSO():
 initials = [{'address': '192.168.8.111:52608', 'initials': [16, 12]},{'address': '192.168.8.114:52610', 'initials': [6, 4]}, {'address': '192.168.8.131:50608', 'initials': [6, 8]},{'address': '192.168.8.124:52410', 'initials': [16, 4]}]
 bounds = [(0, 2), (10, 16)]
 
-pso = PSO(optimization_function, initials, bounds, num_particles = 4, maxiter=10)
+pso = PSO(optimization_function, initials, bounds, num_particles = 4, maxiter=30)
 print(f"{pso.run()}, the final value")
